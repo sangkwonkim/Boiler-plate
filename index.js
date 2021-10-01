@@ -4,18 +4,20 @@ const port = 5000
 const bodyParser = require('body-parser');
 const { User } = require("./models/User");
 
+const config = require('./config/key');
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(express.json());;
 app.use(express.urlencoded({extended: true}));
 
 const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://sangkwon:qkdtl21@cluster0.imyq0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+mongoose.connect(config.mongoURI, {
     useNewUrlParser: true, useUnifiedTopology: true
 }).then(()=> console.log('MongoDB Connected...'))
   .catch(err => console.log(err))
 
-app.get('/', (req, res) => res.send('hello world!'))
+app.get('/', (req, res) => res.send('hello world! what the hell is this'))
 
 app.post('/register', (req, res) => {
 
