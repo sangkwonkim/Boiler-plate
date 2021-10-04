@@ -3,7 +3,7 @@ const app = express()               // app에서 express를 실행한다.
 const port = 5000
 const bodyParser = require('body-parser'); // 이 dependency는 클라이언트(웹 브라우저)와 서버가 통신할 때, 예를 들어 유저가 회원가입을 위해 정보를 입력하면 서버가 받아야 되는데 그때 body 데이터를 분석(parser)해서 req.body로 출력해준다.
 const { User } = require("./models/User"); // user 앱에서 user정보를 갖고온다.
-
+const cookieParser = require("cookie-parser")
 const config = require('./config/key'); // key.js에서 정한 환경변수의 상태를 불러온다.
 
 // application/x-www-form-urlendcoded 이렇게 된 데이터를 서버에서 클라이언트에서 보낸 정보를 분석해서 가져올 수 있도록 함,
@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({extended: true})); //바디파서가 클라이언
 app.use(bodyParser.json());
 app.use(express.json());;
 app.use(express.urlencoded({extended: true}));
-
+app.use(cookieParser());
 // mongoose는 간단하게 몽고db를 편하게 쓸 수 있는 object modeling tool이다.
 // user의 정보가 몽고db 저장된다.
 const mongoose = require('mongoose')
@@ -35,5 +35,36 @@ app.post('/register', (req, res) => {
         })
     })
 })
+
+app.post('/login', (req, res) => {
+    // 요청된 이메일을 데이터베이스에서 찾는다.
+    User.findOne({ email: req.body.email }, (err, user) => {  // 몽고스에서 findOne 메소드를 이용
+        if(!user) {
+            return res.json({
+                loginSuccess: false,
+                message: "제공된 이메일에 해당하는 유저가 없습니다."
+            })
+        }
+        //요청된 이메일이 데이터 베이스에 있다면 비밀번호가 맞는지 확인.
+        user.comparePassword(req.body.password, (err, isMatch) => {
+            if(!isMatch)
+                return res.json({ loginSuccess: false, message: "비밀번호가 틀렸습니다."})
+            
+            // 비밀번호까지 맞다면 토큰을 생성하기.
+            user.generateToken((err, user) => { // user.js에서 만든 generateToken 을 통해서 에러나 유저의 정보가 입력된다.
+                if(err) return res.status(400).send(err); // 유저.js에서 받은 정보가 에러면 출력한다.
+                //토큰은 쿠키나 로컬 스토리지에 저장할 수 있다. 저장소에 대한 논란은 많다. 각기 장단점이 있다. 쿠키는 쿠키파서를 다운받아야한다.
+                res
+                .cookie("x-auth", user.token) // 쿠키에 x-auth 가 생겨서 토큰이 들어간다.
+                .status(200) // 성공했다는 표시
+                .json({ loginSuccess: true, userId: user._id}) // 메세지를 전달한다.
+            })
+
+        })
+    })
+
+})
+
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`)) //우리가 정한 port에서 실행한다.
