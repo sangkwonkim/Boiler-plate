@@ -5,6 +5,7 @@ const bodyParser = require('body-parser'); // 이 dependency는 클라이언트(
 const { User } = require("./models/User"); // user 앱에서 user정보를 갖고온다.
 const cookieParser = require("cookie-parser")
 const config = require('./config/key'); // key.js에서 정한 환경변수의 상태를 불러온다.
+const { auth } = require('./middleware/auth');
 
 // application/x-www-form-urlendcoded 이렇게 된 데이터를 서버에서 클라이언트에서 보낸 정보를 분석해서 가져올 수 있도록 함,
 app.use(bodyParser.urlencoded({extended: true})); //바디파서가 클라이언트에서 오는 정보를 서버에서 분석해서 가져갈 수 있도록 하는 것.
@@ -23,7 +24,7 @@ mongoose.connect(config.mongoURI, { // 데이터가 저장되는 몽고디비에
 
 app.get('/', (req, res) => res.send('hello world! what the hell is this')) // 루트 디렉토리에 해당 부분이 출력된다.
 
-app.post('/register', (req, res) => { 
+app.post('api/users/register', (req, res) => { 
 
 // 회원가입할 때 필요한 정보들을 클라이언트에서 가져오면
 // 그 정보들을 데이터 베이스에 저장한다. 
@@ -36,7 +37,7 @@ app.post('/register', (req, res) => {
     })
 })
 
-app.post('/login', (req, res) => {
+app.post('api/users/login', (req, res) => {
     // 요청된 이메일을 데이터베이스에서 찾는다.
     User.findOne({ email: req.body.email }, (err, user) => {  // 몽고스에서 findOne 메소드를 이용
         if(!user) {
@@ -55,15 +56,30 @@ app.post('/login', (req, res) => {
                 if(err) return res.status(400).send(err); // 유저.js에서 받은 정보가 에러면 출력한다.
                 //토큰은 쿠키나 로컬 스토리지에 저장할 수 있다. 저장소에 대한 논란은 많다. 각기 장단점이 있다. 쿠키는 쿠키파서를 다운받아야한다.
                 res
-                .cookie("x-auth", user.token) // 쿠키에 x-auth 가 생겨서 토큰이 들어간다.
+                .cookie("x_auth", user.token) // 쿠키에 x-auth 가 생겨서 토큰이 들어간다.
                 .status(200) // 성공했다는 표시
                 .json({ loginSuccess: true, userId: user._id}) // 메세지를 전달한다.
             })
-
         })
     })
-
 })
+
+// role 0 일반 유저, 0이 아니면 관리자 
+//authentication auth 라우트 - 페이지에 따라서 이용 가능한 유저가 다르기 때문에, 해당 유저가 이용 가능한지 여부를 확인하기 위해서
+// auth 미들웨어를 통해서 유저 쿠키에 저장된 토큰을 서버에 가져와서 복화화를 한다.
+ app.get('/api/users/auth', auth, (req, res) => {  
+    //미들웨어를 통과를 했다면, authentictation이 true
+    res.status(200).json({
+        _id: req.user._id,
+        isAdmin: req.user.role === 0 ? false : true,
+        isAuth: true,
+        email: req.user.email,
+        name: req.user.name,
+        role: req.user.role
+    })
+ })
+
+
 
 
 
