@@ -68,7 +68,7 @@ app.post('api/users/login', (req, res) => {
 //authentication auth 라우트 - 페이지에 따라서 이용 가능한 유저가 다르기 때문에, 해당 유저가 이용 가능한지 여부를 확인하기 위해서
 // auth 미들웨어를 통해서 유저 쿠키에 저장된 토큰을 서버에 가져와서 복화화를 한다.
  app.get('/api/users/auth', auth, (req, res) => {  
-    //미들웨어를 통과를 했다면, authentictation이 true
+    //미들웨어를 통과를 했다면, authentictation이 tru
     res.status(200).json({
         _id: req.user._id,
         isAdmin: req.user.role === 0 ? false : true,
@@ -80,7 +80,19 @@ app.post('api/users/login', (req, res) => {
  })
 
 
+// 로그아웃 기능 => 로그아웃하는 유저를 데이터 베이스에서 찾아서 로그아웃하면 해당 토큰을 지워준다.
+// auth를 통해서 인증을 할 때,클라이언트의 쿠키에서 토큰을 인증을 하는데, 데이터 베이스에 토큰이 없기 때문에 인증이 안되서 로그인 기능이 풀리게 된다.
 
+app.get('/api/users/logout', auth, (req, res) => { // 로그아웃을 할 때, 로그인 된 상태기 때문에 auth를 넣어준다.
+    User.findOneAndUpdate({_id: req.user._id}, // auth를 이용해서 user._id로 유저 찾는다. findOneAndUpdate 이거는 찾아서 그 상태를 업데이트 해준다(로그아웃) 
+        { token: ""}
+        , (err, user) => {
+            if (err) return res.json({ success: false, err });
+            return res.status(200).send({
+                success: true
+            })
+        }) 
+})
 
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`)) //우리가 정한 port에서 실행한다.

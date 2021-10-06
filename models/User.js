@@ -83,16 +83,16 @@ userSchema.methods.generateToken = function(cb) {
 }
 
 
-// 클라이언트에서 가져온 토큰을 복호화 한다.
-userSchema.statics.findByToken = function(token, cb) {
+                                        
+userSchema.statics.findByToken = function(token, cb) { // 가져온 token
     var user = this;
     // 토큰 복호화.
-    jwt.verify(token, 'secretToken', function(err, decoded) {
+    jwt.verify(token, 'secretToken', function(err, decoded) { // decoded 는 토큰이 복호화 된 후 나온 값으로 user._id
         // 유저 아이디를 이용해서 유저를 찾은 다음에 
-        //클라이언트에서 가져온 토큰과 데이터베이스에 보관된 토큰이 일치하는 지 확인.
-        user.findOne({"_id": decoded, "token": token}, function(err, user){
+        // 클라이언트에서 가져온 토큰과 데이터베이스에 보관된 토큰이 일치하는 지 확인.
+        user.findOne({"_id": decoded, "token": token}, function(err, user){ // {}에 넣은 걸 이용해서 찾는다.
             if(err) return cb(err);
-            cb(null, user)
+            cb(null, user) // 아이디로 찾고, 토큰도 비교해 본다. 맞다면, 유저 정보를 auth로 전달한다.
         })
     })
     
