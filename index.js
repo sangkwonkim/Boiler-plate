@@ -1,3 +1,4 @@
+
 const express = require('express') //express js를 이용할 수 있다. express 에 들어가서 초기 form 을 복사해서 갖고 온다.
 const app = express()               // app에서 express를 실행한다.
 const port = 5000
@@ -37,7 +38,7 @@ app.post('api/users/register', (req, res) => {
     })
 })
 
-app.post('api/users/login', (req, res) => {
+app.post('/api/users/login', (req, res) => {
     // 요청된 이메일을 데이터베이스에서 찾는다.
     User.findOne({ email: req.body.email }, (err, user) => {  // 몽고스에서 findOne 메소드를 이용
         if(!user) {
@@ -55,8 +56,7 @@ app.post('api/users/login', (req, res) => {
             user.generateToken((err, user) => { // user.js에서 만든 generateToken 을 통해서 에러나 유저의 정보가 입력된다.
                 if(err) return res.status(400).send(err); // 유저.js에서 받은 정보가 에러면 출력한다.
                 //토큰은 쿠키나 로컬 스토리지에 저장할 수 있다. 저장소에 대한 논란은 많다. 각기 장단점이 있다. 쿠키는 쿠키파서를 다운받아야한다.
-                res
-                .cookie("x_auth", user.token) // 쿠키에 x-auth 가 생겨서 토큰이 들어간다.
+                res.cookie("x_auth", user.token) // 쿠키에 x-auth 가 생겨서 토큰이 들어간다.
                 .status(200) // 성공했다는 표시
                 .json({ loginSuccess: true, userId: user._id}) // 메세지를 전달한다.
             })
