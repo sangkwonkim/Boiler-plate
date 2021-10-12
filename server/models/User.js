@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose'); // 몽구스 모듈을 가져온다.
 const bcrypt = require('bcrypt'); // 비밀번호를 암호화 하기 위해 다운받은 비크립트를 가져온다.
 const saltRounds = 10; // 비크립트에서는 salt를 이용해서 비밀번호를 암호화하기 때문에서 salt를 먼저 생성해야한다(아래에 gensalt). saltrounds는 salt의 글자수를 정한다.

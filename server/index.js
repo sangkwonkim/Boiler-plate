@@ -38,6 +38,10 @@ app.post('api/users/register', (req, res) => {
     })
 })
 
+app.get('/api/hello', (req, res) => { // proxy, axios가 정상적으로 작동하는 지 확인한다.
+    res.send("안녕하세요") // /api/hello 화면에서 req를 받으면 res로 send("안녕하세요") 로 보낸다.
+})
+
 app.post('/api/users/login', (req, res) => {
     // 요청된 이메일을 데이터베이스에서 찾는다.
     User.findOne({ email: req.body.email }, (err, user) => {  // 몽고스에서 findOne 메소드를 이용
