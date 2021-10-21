@@ -1,8 +1,9 @@
 import React, {useState} from 'react'
 import Axios from 'axios'
 import { useDispatch } from 'react-redux' // 리덕스에서 디스패치로 액션이 취해지고 스테이트가 변경된다. 먼저 디스패치를 보낸다.
+import { loginUser } from '../../../_actions/user_action'
 
-function LoginPage() {
+function LoginPage(props) {
 
     const dispatch = useDispatch()
 
@@ -23,7 +24,13 @@ function LoginPage() {
         }
 
         dispatch(loginUser(body)) // 로그인 유저라는 액션을 진행하기 위해서 작업
-        
+            .then(response => {
+                if(response.payload.loginSuccess) {
+                    props.history.push('/') //리액트에서 페이지 이동에 이렇게 사용
+                } else {
+                    alert('Error')
+                }
+            })
 
     }
     return (
@@ -43,3 +50,5 @@ function LoginPage() {
 }
 
 export default LoginPage
+// email:sangkwon2406@naver.com
+// password:1234

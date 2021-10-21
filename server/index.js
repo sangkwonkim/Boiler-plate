@@ -25,7 +25,7 @@ mongoose.connect(config.mongoURI, { // 데이터가 저장되는 몽고디비에
 
 app.get('/', (req, res) => res.send('hello world! what the hell is this')) // 루트 디렉토리에 해당 부분이 출력된다.
 
-app.post('api/users/register', (req, res) => { 
+app.post('/api/users/register', (req, res) => { 
 
 // 회원가입할 때 필요한 정보들을 클라이언트에서 가져오면
 // 그 정보들을 데이터 베이스에 저장한다. 
