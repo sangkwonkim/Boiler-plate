@@ -1,4 +1,3 @@
-
 const express = require('express') //express js를 이용할 수 있다. express 에 들어가서 초기 form 을 복사해서 갖고 온다.
 const app = express()               // app에서 express를 실행한다.
 const port = 5000
