@@ -1,5 +1,5 @@
 import {
-    LOGIN_USER, REGISTER_USER
+    LOGIN_USER, REGISTER_USER, AUTH_USER
 } from '../_actions/types' // 타입을 액션에서 저장하고 타입을 불러와서 활용한다.
 
 // 리듀서를 만든다.
@@ -10,6 +10,9 @@ export default function (state = {}, action) { // state는 previoustate, action�
             break;
         case REGISTER_USER:
             return {...state, register: action.payload}
+            break;
+        case AUTH_USER:
+            return {...state, userData: action.payload}
             break;
         default:
             return state;

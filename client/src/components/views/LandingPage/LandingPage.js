@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import axios from 'axios'
+import withRouter from 'react-router-dom' // history push를 이용할 수 있다.
 
 function LandingPage(props) {
 

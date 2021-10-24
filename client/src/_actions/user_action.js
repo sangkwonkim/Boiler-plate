@@ -1,7 +1,8 @@
 import axios from 'axios'
 import {
     LOGIN_USER,
-    REGISTER_USER
+    REGISTER_USER,
+    AUTH_USER
 } from './types'
 // 로그인 페이지에서 보냈던 dispatch(loginUser(body))를 loginUser(dataToSubmit)로 받는다.
 
@@ -21,6 +22,15 @@ export function registerUser(dataToSubmit) {
     .then(response =>  response.data )
     return { 
         type: REGISTER_USER,
+        payload: request
+    }
+}
+
+export function auth() {
+    const request = axios.get('/api/users/auth')
+    .then(response =>  response.data )
+    return { 
+        type: AUTH_USER,
         payload: request
     }
 }

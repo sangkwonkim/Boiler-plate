@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import Axios from 'axios'
 import { useDispatch } from 'react-redux' // 리덕스에서 디스패치로 액션이 취해지고 스테이트가 변경된다. 먼저 디스패치를 보낸다.
 import { loginUser } from '../../../_actions/user_action'
+import { withRouter } from 'react-router-dom'
 
 function LoginPage(props) {
 
