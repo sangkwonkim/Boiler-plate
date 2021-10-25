@@ -27,7 +27,7 @@ function LoginPage(props) {
         dispatch(loginUser(body)) // 로그인 유저라는 액션을 진행하기 위해서 작업
             .then(response => {
                 if(response.payload.loginSuccess) {
-                    props.history.push('/') //리액트에서 페이지 이동에 이렇게 사용
+                    props.history.push("/") //리액트에서 페이지 이동에 이렇게 사용
                 } else {
                     alert('Error')
                 }
@@ -50,6 +50,6 @@ function LoginPage(props) {
     )
 }
 
-export default LoginPage
+export default withRouter(LoginPage)
 // email:sangkwon2406@naver.com
 // password:1234

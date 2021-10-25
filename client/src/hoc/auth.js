@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux'
 import Axios from 'axios'
 import { dispatch } from 'rxjs/internal/observable/range'
 import { auth } from '../_actions/user_action'
-import { response } from 'express'
 
 export default function(SpecificComponent, option, adminRoute = null) {
 
